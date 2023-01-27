@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Liurp.mapper.MovieMapper">
+    <resultMap id="MovieResultMap" type="Movie">
+        <result column="movie_name" property="movieName"></result>
+        <result column="movie_grade" property="movieGrade"></result>
+    </resultMap>
+    <select id="selectAll" resultMap="MovieResultMap">
+        select * from movie;
+    </select>
+    <select id="selectById" resultMap="MovieResultMap">
+        select * from movie where id = #{id};
+    </select>
+    <select id="selectByName" resultMap="MovieResultMap">
+        select * from movie where movie_name like #{movieName};
+    </select>
+    <insert id="movieAdd" useGeneratedKeys="true" keyProperty="id">
+        insert into movie(movie_name, movie_grade, date, description) VALUES(#{movieName},#{movieGrade},#{date},#{description});
+    </insert>
+    <update id="movieUpdate">
+        update movie
+        <set>
+            <if test="movieName != null and movieName != '' ">
+                movie_name = #{movieName},
+            </if>
+            <if test="movieGrade != null">
+                movie_grade = #{movieGrade},
+            </if>
+            <if test="date != null and date != '' ">
+                date = #{date},
+            </if>
+            <if test="description != null and description != '' ">
+                description = #{description}
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+    <delete id="movieDelete">
+        delete from movie where id = #{id};
+    </delete>
+    <delete id="movieDeletes">
+        delete from movie
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        ;
+    </delete>
+</mapper>
